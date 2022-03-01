@@ -5,41 +5,41 @@ const errorModal = document.querySelector ("#modal")
 // Your JavaScript code goes here!
 
 hideError()
-document.addEventListener("DOMContentLoaded", () => {
-  listenForClick ()
-})
 
 function hideError () {
   errorModal.classList.add("hidden")
 }
 
-function handleError () {
-  errorModal.classList.remove("hidden")
-  setTimeout (() => {
-   hideError()
-  }, 3000)
-}
 
-function listenForClick () {
-  document.addEventListener('click', (event) => {
-   if (event.target.classList.value === 'like-glyph') {
-     handleResponse(event)
-    }
-  })
-}
-
-function handleResponse (event) {
-  if (event.target.textContent === EMPTY_HEART){
-    event.target.classList.add ('activated-heart')
-    event.target.textContent = FULL_HEART
+document.addEventListener("DOMContentLoaded", () => {
+  const hearts = document.querySelectorAll("span.like-glyph")
+  hearts.forEach(hearts => hearts.addEventListener("click", clickHandler))
+  function clickHandler(hearts){
     mimicServerCall()
-    .catch (error => handleError(error))
+    .then( () => {
+        if (hearts.target.innerText === EMPTY_HEART) {
+          hearts.target.classList.add('activated-heart')
+          hearts.target.innerText = FULL_HEART
+          //console.log ("empty")
+        }
+        else {
+          hearts.target.classList.remove('activated-heart')
+          hearts.target.innerText = EMPTY_HEART
+          //console.log ("full")
+        }
+      })
+    .catch((error) => {
+        //console.log("error")
+        errorModal.classList.remove("hidden")
+        setTimeout(() => {
+          hideError()
+          }, 3000)
+      })
+      
   }
-  else if (event.target.textContent === FULL_HEART){
-    event.target.classList.remove('activated-heart')
-    event.target.textContent = EMPTY_HEART
-  }
-}
+
+})
+
 
 //------------------------------------------------------------------------------
 // Don't change the code below: this function mocks the server response
